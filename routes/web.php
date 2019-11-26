@@ -14,44 +14,54 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
-
 Route::group(['middleware' => 'auth'], function () {
-	Route::get('table-list', function () {
-		return view('pages.table_list');
-	})->name('table');
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::resource('user', 'UserController', ['except' => ['show']]);
 
-	Route::get('typography', function () {
-		return view('pages.typography');
-	})->name('typography');
+    Route::prefix('profile')->group(function () {
+      Route::get('/', 'ProfileController@edit')->name('profile.edit');
+      Route::put('/', 'ProfileController@update')->name('profile.update');
+      Route::put('/password', 'ProfileController@password')->name('profile.password');
+    });
 
-	Route::get('icons', function () {
-		return view('pages.icons');
-	})->name('icons');
+    Route::prefix('template')->group(function () {
+      Route::get('dashboard', function () {
+        return view('template.dashboard');
+      })->name('dashboard');
 
-	Route::get('map', function () {
-		return view('pages.map');
-	})->name('map');
+      Route::get('table-list', function () {
+        return view('template.pages.table_list');
+      })->name('table');
 
-	Route::get('notifications', function () {
-		return view('pages.notifications');
-	})->name('notifications');
+      Route::get('typography', function () {
+        return view('template.pages.typography');
+      })->name('typography');
 
-	Route::get('rtl-support', function () {
-		return view('pages.language');
-	})->name('language');
+      Route::get('icons', function () {
+        return view('template.pages.icons');
+      })->name('icons');
 
-	Route::get('upgrade', function () {
-		return view('pages.upgrade');
-	})->name('upgrade');
+      Route::get('map', function () {
+        return view('template.pages.map');
+      })->name('map');
+
+      Route::get('notifications', function () {
+        return view('template.pages.notifications');
+      })->name('notifications');
+
+      Route::get('rtl-support', function () {
+        return view('template.pages.language');
+      })->name('language');
+
+      Route::get('upgrade', function () {
+        return view('template.pages.upgrade');
+      })->name('upgrade');
+    });
 });
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'UserController', ['except' => ['show']]);
-	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
-	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
-	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
-});
 
+});
