@@ -17,6 +17,14 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::namespace('Sensor')->group(function () {
+  Route::prefix('sensor')->group(function () {
+    Route::get('test', 'SensorController@test')->name('sensor.test');
+    Route::get('notification', 'SensorController@sendNotification')->name('sensor.notification');
+    Route::post('save', 'SensorController@saveSensorData')->name('sensor.save');
+  });
+});
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::resource('user', 'UserController', ['except' => ['show']]);
@@ -25,6 +33,12 @@ Route::group(['middleware' => 'auth'], function () {
       Route::get('/', 'ProfileController@edit')->name('profile.edit');
       Route::put('/', 'ProfileController@update')->name('profile.update');
       Route::put('/password', 'ProfileController@password')->name('profile.password');
+    });
+
+    Route::namespace('Sensor')->group(function () {
+      Route::prefix('sensor')->group(function () {
+        Route::get('/', 'SensorController@index')->name('sensor.index');
+      });
     });
 
     Route::prefix('template')->group(function () {
@@ -60,8 +74,4 @@ Route::group(['middleware' => 'auth'], function () {
         return view('template.pages.upgrade');
       })->name('upgrade');
     });
-});
-
-Route::group(['middleware' => 'auth'], function () {
-
 });

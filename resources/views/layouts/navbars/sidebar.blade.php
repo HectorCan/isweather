@@ -1,4 +1,4 @@
-<div class="sidebar" data-color="azure" data-background-color="white" data-image="{{ asset('material') }}/img/sidebar-1.jpg">
+<div class="sidebar" data-color="green" data-background-color="white" data-image="{{ asset('material') }}/img/sidebar-1.jpg">
   <!--
       Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
@@ -18,6 +18,12 @@
           </a>
         </li>
 
+        <li class="nav-item{{ $activePage == 'sensor' ? ' active' : '' }}">
+          <a class="nav-link" href="{{ route('sensor.index') }}">
+            <i class="material-icons">wb_sunny</i>
+              <p>{{ __('Sensores') }}</p>
+          </a>
+        </li>
     </ul>
   </div>
 </div>
