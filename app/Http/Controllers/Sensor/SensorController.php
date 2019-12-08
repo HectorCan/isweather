@@ -33,6 +33,17 @@ class SensorController extends Controller
       return response()->json(['m' => 'test ok'], 200);
     }
 
+    public function ChartData(Request $request) {
+      $response = [
+        'h' => Humidity::orderBy('created_at', 'desc')->orderBy('created_at', 'desc')->limit(10)->get(),
+        'l' => Light::orderBy('created_at', 'desc')->orderBy('created_at', 'desc')->limit(10)->get(),
+        't' => Temperature::orderBy('created_at', 'desc')->orderBy('created_at', 'desc')->limit(10)->get(),
+        'p' => Pressure::orderBy('created_at', 'desc')->orderBy('created_at', 'desc')->limit(10)->get(),
+      ];
+
+      return response()->json($response, 200);
+    }
+
     public function saveSensorData(Request $request)
     {
       if (isset($request->light) && isset($request->humidity) && isset($request->temperature) && isset($request->pressure))

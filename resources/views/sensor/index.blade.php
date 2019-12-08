@@ -92,14 +92,87 @@
           </div>
         @endif
       </div>
+      
+
+      <div class="row">
+        <div class="col-sm">
+          <canvas id="t"></canvas>
+        </div>
+        <div class="col-sm">
+          <canvas id="h"></canvas>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm">
+          <canvas id="p"></canvas>
+        </div>
+        <div class="col-sm">
+          <canvas id="l"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 @endsection
 
 @push('js')
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
   <script>
-    $(document).ready(function() {
+    function parseData(data) {
+      var responses = [];
+      $.each(data, function () {
+        var arr = this;
 
+        var response = {
+          labels: [],
+          datasets: [{ data: [] }]
+        };
+
+        $.each(arr, function () {
+          response.labels.push(this.created_at);
+          response.datasets[0].data.push(this.value);
+        });
+
+        responses.push(response);
+      });
+
+      return responses;
+    }
+
+    function randomColor() {
+      var r = Math.floor((Math.random() * 255) + 1);
+      var g = Math.floor((Math.random() * 255) + 1);
+      var b = Math.floor((Math.random() * 255) + 1);
+
+      return [`rgba(${r}, ${g}, ${b}, 0.6)`, `rgba(${r}, ${g}, ${b}, 0.6)`];
+    }
+
+    $(document).ready(function() {
+      $.ajax('{{route('sensor.data')}}', {
+        dataType: 'json',
+        success: function (res) {
+          var parsedData = parseData(res);
+
+          var canvases = ['t', 'h', 'p', 'l'];
+          $.each(canvases, function (i, v) {
+            var canva = document.getElementById(v).getContext('2d');
+            var color = randomColor();
+
+            parsedData[i].datasets[0].label = v;
+            parsedData[i].datasets[0].backgroundColor = color[0];
+            parsedData[i].datasets[0].borderColor = color[1];
+            var x = new Chart(canva, {
+              type: 'line',
+              data: parsedData[i]
+            });
+          });
+        },
+        error: function (e) {
+
+        },
+        complete: function () {
+
+        }
+      });
     });
   </script>
 @endpush

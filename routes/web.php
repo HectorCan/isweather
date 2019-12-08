@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::namespace('Sensor')->group(function () {
       Route::prefix('sensor')->group(function () {
         Route::get('/', 'SensorController@index')->name('sensor.index');
+        Route::get('data', 'SensorController@ChartData')->name('sensor.data');
       });
     });
 
